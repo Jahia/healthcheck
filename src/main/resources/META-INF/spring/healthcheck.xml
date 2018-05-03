@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:osgi="http://www.springframework.org/schema/osgi"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/osgi
+       http://www.springframework.org/schema/osgi/spring-osgi.xsd">
+
+    <bean id="DBConnectivityProbe" class="org.jahia.modules.healthcheck.probes.DBConnectivityProbe"/>
+    <bean id="RequestLoadProbe" class="org.jahia.modules.healthcheck.probes.RequestLoadProbe"/>
+    <bean id="SiteHTMLProbe" class="org.jahia.modules.healthcheck.probes.SiteHTMLProbe"/>
+
+    <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer">
+        <property name="healthcheckers">
+            <list>
+                <ref bean="DBConnectivityProbe" />
+                <ref bean="RequestLoadProbe" />
+                <ref bean="SiteHTMLProbe" />
+            </list>
+        </property>
+    </bean>
+
+    <bean id="httpServiceListener" class="org.jahia.modules.healthcheck.servlet.HealthcheckServlet">
+        <property name="simpleServlet" ref="simpleServlet" />
+    </bean>
+
+    <osgi:reference id="httpService" interface="org.osgi.service.http.HttpService">
+        <osgi:listener ref="httpServiceListener" bind-method="onBind" unbind-method="onUnbind" />
+    </osgi:reference>
+
+</beans>
