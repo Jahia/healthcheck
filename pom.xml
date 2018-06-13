@@ -73,8 +73,13 @@
             <version>1.0.2.RELEASE</version>
             <scope>provided</scope>
         </dependency>
-</dependencies>
+    </dependencies>
 
+    <properties>
+        <jahia-depends>default</jahia-depends>
+        <jahia-module-type>system</jahia-module-type>
+        <export-package>org.jahia.modules.healthcheck.interfaces</export-package>
+    </properties>
 
     <repositories>
         <repository>
@@ -91,5 +96,19 @@
         </repository>
     </repositories>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <_dsannotations>*</_dsannotations>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

@@ -12,13 +12,13 @@
     <bean id="SiteHTMLProbe" class="org.jahia.modules.healthcheck.probes.SiteHTMLProbe"/>
 
     <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer">
-        <property name="healthcheckers">
+        <!--property name="healthcheckers">
             <list>
                 <ref bean="DBConnectivityProbe" />
                 <ref bean="RequestLoadProbe" />
                 <ref bean="SiteHTMLProbe" />
             </list>
-        </property>
+        </property-->
     </bean>
 
     <bean id="httpServiceListener" class="org.jahia.modules.healthcheck.servlet.HealthcheckServlet">

@@ -1,4 +1,4 @@
-package org.jahia.modules.healthcheck;
+package org.jahia.modules.healthcheck.interfaces;
 
 import org.json.JSONException;
 import org.json.JSONObject;
