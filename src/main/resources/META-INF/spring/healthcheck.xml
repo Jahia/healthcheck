@@ -7,19 +7,7 @@
        http://www.springframework.org/schema/osgi
        http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
-    <bean id="DBConnectivityProbe" class="org.jahia.modules.healthcheck.probes.DBConnectivityProbe"/>
-    <bean id="RequestLoadProbe" class="org.jahia.modules.healthcheck.probes.RequestLoadProbe"/>
-    <bean id="SiteHTMLProbe" class="org.jahia.modules.healthcheck.probes.SiteHTMLProbe"/>
-
-    <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer">
-        <!--property name="healthcheckers">
-            <list>
-                <ref bean="DBConnectivityProbe" />
-                <ref bean="RequestLoadProbe" />
-                <ref bean="SiteHTMLProbe" />
-            </list>
-        </property-->
-    </bean>
+    <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer"/>
 
     <bean id="httpServiceListener" class="org.jahia.modules.healthcheck.servlet.HealthcheckServlet">
         <property name="simpleServlet" ref="simpleServlet" />
