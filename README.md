@@ -29,7 +29,7 @@ A typical Healthcheck extension is the healcheck-cluster module.
 ## Custom extensions
 
 Developping a custom extension is straightforward and can be done in two different ways:
- - Forking the healcheck-extensionexample module 
+ - Forking the healcheck-extensionexample module (https://github.com/Jahia/healcheck-extensionexample)
  - Manually declarating an OSGi service and implementing a Java interface (described bellow)
  
 ### Steps to creating a Healthcheck extension:
@@ -108,5 +108,3 @@ public String getName() {
     return "ProbeExample";
 }
 ```
- 
-## Usage
