@@ -11,3 +11,4 @@ buildNumber.properties
 healthcheck.iml
 src/main/import/repository.xml.generated
 .idea/
+.DS_Store
