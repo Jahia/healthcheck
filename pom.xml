@@ -61,8 +61,8 @@
     </description>
 
     <scm>
-        <connection>scm:git:git@github.com:Jahia/healthcheck.git</connection>
-        <url>scm:git:git@github.com:Jahia/healthcheck.git</url>
+        <connection>scm:git@github.com:Jahia/healthcheck.git</connection>
+        <url>scm:git@github.com:Jahia/healthcheck.git</url>
       <tag>healthcheck-1.0.0</tag>
   </scm>
 
