@@ -4,6 +4,11 @@ Healthchecks provide insights about a platform's health and can help trigger ale
 
 The healthcheck module is a core component that can be used in conjunction with extension modules in order to provide more information to the monitoring systems.
 
+The healthcheck module returns a global status for the server, as well a status for all tested components. The status can be:
+ * GREEN (Nominal status)
+ * YELLOW (Non critical problem)
+ * RED (Critical issue)
+
 ## Usage
 
 The healthcheck is available thourgh the servlet `/healthcheck` to all users who are granted the Jahia DX server role `monitoring`
@@ -23,3 +28,85 @@ A typical Healthcheck extension is the healcheck-cluster module.
 
 ## Custom extensions
 
+Developping a custom extension is straightforward and can be done in two different ways:
+ - Forking the healcheck-extensionexample module 
+ - Manually declarating an OSGi service and implementing a Java interface (described bellow)
+ 
+### Steps to creating a Healthcheck extension:
+#### 1. Updating the pom.xml file
+ 
+Add the following elements to the pom file:
+ 
+    <dependencies>
+        <dependency>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>healthcheck</artifactId>
+            <version>[1.0,2.0]</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+
+    <properties>
+        <jahia-depends>default</jahia-depends>
+        <jahia-module-type>system</jahia-module-type>
+        <import-package>org.jahia.modules.healthcheck.interfaces</import-package>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Jahia-Depends>default, healthcheck</Jahia-Depends>
+                        <_dsannotations>*</_dsannotations>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
+ #### 2. Create a new Java Class
+ 
+ In the extensionexample module, we decided to create a `org.jahia.modules.healthcheckexample.probes` package and a `ProbeExample.java` file.
+ 
+ #### 3. Create a Probe OSGi service
+ 
+In the Java Class previously created, implement the `Probe` interface (`org.jahia.modules.healthcheck.interfaces.Probe`) and declare a new Probe service:  
+
+```
+import org.osgi.service.component.annotations.Component;
+import org.jahia.modules.healthcheck.interfaces.Probe;
+
+
+@Component(service = Probe.class, immediate = true)
+public class ProbeExampleService implements Probe {
+   ...
+}
+```
+
+Then, implement all 3 methods:
+
+```
+@Override
+public String getStatus() {
+    ...
+    return "GREEN";
+}
+
+@Override
+public JSONObject getData() {
+    // Contains potential error messages. Return null if no message is necessary
+    return jsonObject;
+}
+
+@Override
+public String getName() {
+    return "ProbeExample";
+}
+```
+ 
+## Usage
