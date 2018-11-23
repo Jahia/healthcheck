@@ -50,6 +50,7 @@ import org.jahia.utils.DatabaseUtils;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 @Component(service = Probe.class, immediate = true)
@@ -58,9 +59,9 @@ public class DBConnectivityProbe implements Probe {
 
     @Override
     public String getStatus()  {
-        try {
+        try (Connection conn = DatabaseUtils.getDatasource().getConnection()){
             // The timeout value is defined in seconds.
-            if (DatabaseUtils.getDatasource().getConnection().isValid(20)) {
+            if (conn.isValid(20)) {
                 return "GREEN";
             } else {
                 return "RED";
