@@ -54,7 +54,7 @@
     <groupId>org.jahia.modules</groupId>
     <artifactId>healthcheck</artifactId>
     <name>healthcheck</name>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.5</version>
     <packaging>bundle</packaging>
     <description>The healthcheck module is a core component that can be used in conjunction with extension modules in order to provide more information to the monitoring systems.
 
@@ -63,7 +63,8 @@
     <scm>
         <connection>scm:git:git@github.com:Jahia/healthcheck.git</connection>
         <url>scm:git:git@github.com:Jahia/healthcheck.git</url>
-    </scm>
+      <tag>healthcheck-1.0.5</tag>
+  </scm>
 
     <dependencies>
         <dependency>
