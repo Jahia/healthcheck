@@ -57,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -96,7 +97,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
-            if (!allowUnauthenticatedAccess && (session.getUser().getUsername().equals("guest") || !session.getNode("/sites/systemsite").hasPermission("healthcheck"))) {
+            if (!allowUnauthenticatedAccess && !isUserAllowed(session)) {
                 result.put("error", "Insufficient privilege");
             } else {
 
@@ -152,6 +153,18 @@ public class HealthcheckJSONProducer extends HttpServlet {
         }
 
         writer.println(result.toString());
+    }
+
+    private boolean isUserAllowed(JCRSessionWrapper session) {
+        if(session.getUser().getUsername().equals("guest")) return false;
+        try {
+            return session.getNode("/sites/systemsite").hasPermission("healthcheck");
+        } catch (PathNotFoundException ignored) {
+            return false;
+        } catch (RepositoryException e) {
+            logger.error("", e);
+            return false;
+        }
     }
 
 }
