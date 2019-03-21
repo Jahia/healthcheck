@@ -48,6 +48,7 @@ import org.jahia.modules.healthcheck.interfaces.HealthcheckProbeService;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.settings.SettingsBean;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.http.HttpService;
@@ -94,7 +95,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            if (session.getUser().getUsername().equals("guest") || !session.getNode("/sites/systemsite").hasPermission("healthcheck")) {
+            final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
+            if (!allowUnauthenticatedAccess && (session.getUser().getUsername().equals("guest") || !session.getNode("/sites/systemsite").hasPermission("healthcheck"))) {
                 result.put("error", "Insufficient privilege");
             } else {
 

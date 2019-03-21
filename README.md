@@ -11,7 +11,9 @@ The healthcheck module returns a global status for the server, as well a status 
 
 ## Usage
 
-The healthcheck is available through the servlet `/healthcheck` to all users who are granted the Jahia DX server role `monitoring`
+The healthcheck is available through the servlet `/healthcheck` to all users who are granted the Jahia DX server role `monitoring`.  
+If you need to make the servlet reachable without authentication, then you can add `modules.healthcheck.allowUnauthenticatedAccess = true` 
+to your `jahia.properties` file. Then it is your responsibility to secure the access to the servlet in your frontend.   
 It returns a JSON object with the following structure:
 
 ![Healthcheck output](./images/output.png)
