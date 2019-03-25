@@ -81,16 +81,6 @@
         <jahia-module-type>system</jahia-module-type>
         <export-package>org.jahia.modules.healthcheck.interfaces</export-package>
     </properties>
-    <distributionManagement>
-        <repository>
-            <id>jahia-enterprise-releases</id>
-            <url>https://devtools.jahia.com/nexus/content/repositories/healthcheck</url>
-        </repository>
-        <snapshotRepository>
-            <id>jahia-enterprise-snapshots</id>
-            <url>https://devtools.jahia.com/nexus/content/repositories/healthcheck</url>
-        </snapshotRepository>
-    </distributionManagement>
 
     <repositories>
         <repository>
