@@ -105,6 +105,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
+
                         <_dsannotations>*</_dsannotations>
                     </instructions>
                 </configuration>

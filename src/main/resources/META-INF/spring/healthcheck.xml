@@ -13,6 +13,14 @@
         <property name="simpleServlet" ref="simpleServlet" />
     </bean>
 
+    <bean id="addHealthcheckToken" class="org.jahia.modules.healthcheck.actions.AddHealthcheckToken">
+        <property name="name" value="addHealthcheckToken" />
+    </bean>
+
+    <bean id="removeHealthcheckToken" class="org.jahia.modules.healthcheck.actions.RemoveHealthcheckToken">
+        <property name="name" value="removeHealthcheckToken" />
+    </bean>
+
     <osgi:reference id="httpService" interface="org.osgi.service.http.HttpService">
         <osgi:listener ref="httpServiceListener" bind-method="onBind" unbind-method="onUnbind" />
     </osgi:reference>

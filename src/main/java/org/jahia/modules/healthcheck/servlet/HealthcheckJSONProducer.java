@@ -66,6 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -96,8 +97,9 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            String token = req.getParameter("token");
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
-            if (!allowUnauthenticatedAccess && !isUserAllowed(session)) {
+            if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
             } else {
 
@@ -155,7 +157,18 @@ public class HealthcheckJSONProducer extends HttpServlet {
         writer.println(result.toString());
     }
 
-    private boolean isUserAllowed(JCRSessionWrapper session) {
+    private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
+        if (token != null) {
+            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession("default", new Locale("en"),new Locale("en"));
+            if (systemSession.nodeExists("/settings/healthcheckSettings")) {
+                if (systemSession.getNode("/settings/healthcheckSettings").hasProperty("tokens")) {
+                    if (systemSession.getNode("/settings/healthcheckSettings").getPropertyAsString("tokens").contains(token)) {
+                        return true;
+                    }
+                }
+            }
+
+        }
         if(session.getUser().getUsername().equals("guest")) return false;
         try {
             return session.getNode("/sites/systemsite").hasPermission("healthcheck");
