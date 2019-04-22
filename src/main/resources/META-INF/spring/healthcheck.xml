@@ -15,10 +15,12 @@
 
     <bean id="addHealthcheckToken" class="org.jahia.modules.healthcheck.actions.AddHealthcheckToken">
         <property name="name" value="addHealthcheckToken" />
+        <property name="requiredPermission" value="healthcheck" />
     </bean>
 
     <bean id="removeHealthcheckToken" class="org.jahia.modules.healthcheck.actions.RemoveHealthcheckToken">
         <property name="name" value="removeHealthcheckToken" />
+        <property name="requiredPermission" value="healthcheck" />
     </bean>
 
     <osgi:reference id="httpService" interface="org.osgi.service.http.HttpService">
