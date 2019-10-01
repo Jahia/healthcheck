@@ -77,6 +77,16 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private HttpService httpService;
     private List<Probe> healthcheckers;
 
+    public String getConfigurationToken() {
+        return configurationToken;
+    }
+
+    public void setConfigurationToken(String configurationToken) {
+        this.configurationToken = configurationToken;
+    }
+
+    public String configurationToken;
+
     public HealthcheckJSONProducer() {
     }
 
@@ -159,6 +169,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
         if (token != null) {
+            // checking if the token passed in jahia.property matches this one
+            if (configurationToken.equals(token)) {
+                return true;
+            }
             JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession("default", new Locale("en"),new Locale("en"));
             if (systemSession.nodeExists("/settings/healthcheckSettings")) {
                 if (systemSession.getNode("/settings/healthcheckSettings").hasProperty("tokens")) {
@@ -167,8 +181,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
                     }
                 }
             }
-
         }
+
+
+
         if(session.getUser().getUsername().equals("guest")) return false;
         try {
             return session.getNode("/sites/systemsite").hasPermission("healthcheck");
