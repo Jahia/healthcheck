@@ -7,8 +7,4 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
-.idea
-healthcheck.iml
 src/main/import/repository.xml.generated
-.idea/
-.DS_Store
