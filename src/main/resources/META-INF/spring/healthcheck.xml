@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer">
-        <property name="configurationToken" value="${heathcheck.token}" />
+        <property name="settingBean" ref="settingsBean" />
     </bean>
 
     <bean id="httpServiceListener" class="org.jahia.modules.healthcheck.servlet.HealthcheckServlet">
