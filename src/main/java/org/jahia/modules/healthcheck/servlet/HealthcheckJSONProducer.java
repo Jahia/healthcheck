@@ -76,16 +76,15 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     private HttpService httpService;
     private List<Probe> healthcheckers;
+    public SettingsBean settingBean;
 
-    public String getConfigurationToken() {
-        return configurationToken;
+    public SettingsBean getSettingBean() {
+        return settingBean;
     }
 
-    public void setConfigurationToken(String configurationToken) {
-        this.configurationToken = configurationToken;
+    public void setSettingBean(SettingsBean settingBean) {
+        this.settingBean = settingBean;
     }
-
-    public String configurationToken;
 
     public HealthcheckJSONProducer() {
     }
@@ -102,6 +101,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String configurationToken = settingBean.getString("healthcheck.token", null);
         JSONObject result = new JSONObject();
         PrintWriter writer = resp.getWriter();
 
@@ -168,6 +168,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
     }
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
+        String configurationToken = settingBean.getString("healthcheck.token", null);
+
         if (token != null) {
             // checking if the token passed in jahia.property matches this one
             if (configurationToken.equals(token)) {
