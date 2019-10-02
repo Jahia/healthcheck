@@ -62,8 +62,8 @@
 
     <scm>
         <connection>scm:git:git@github.com:Jahia/healthcheck.git</connection>
-        <url>scm:git:git@github.com:Jahia/healthcheck.git</url>
-        <developerConnection>https://github.com/Jahia/healthcheck.git</developerConnection>
+        <url>https://github.com/Jahia/healthcheck</url>
+        <developerConnection>scm:git:git@github.com:Jahia/healthcheck.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
