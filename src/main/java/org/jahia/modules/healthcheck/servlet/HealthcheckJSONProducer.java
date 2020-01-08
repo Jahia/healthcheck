@@ -20,7 +20,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.settings.SettingsBean;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class HealthcheckJSONProducer extends HttpServlet {
 
-    private Logger logger = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
+    private Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
@@ -83,14 +82,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         System.out.println("JSONObject: " + healthcheckerJSON.toString());
                         JSONObject checkers;
                         if (!result.has("probes")) {
-                            logger.info("creating checkers");
+                            LOGGER.info("creating checkers");
                             checkers = new JSONObject();
                             result.put("probes", checkers);
                         } else {
                             checkers = result.getJSONObject("probes");
                         }
                         checkers.put(probes.get(i).getName(), healthcheckerJSON);
-                        logger.info("putting checkers " + probes.get(i).getName());
+                        LOGGER.info("putting checkers " + probes.get(i).getName());
 
                     }
                     result.put("registeredProbes", probes.size());
@@ -101,14 +100,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
                     result.put("duration", elapsedTime + " ms");
                     result.put("status", currentStatus);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } catch (JSONException ex) {
+                    LOGGER.error("Impossible to generate the JSON", ex);
                 }
             }
-        } catch (RepositoryException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (RepositoryException ex) {
+            LOGGER.error("Impossible to retrieve the JCR session", ex);
+        } catch (JSONException ex) {
+            LOGGER.error("Impossible to generate the JSON", ex);
         }
 
         writer.println(result.toString());
@@ -140,7 +139,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
         } catch (PathNotFoundException ignored) {
             return false;
         } catch (RepositoryException e) {
-            logger.error("", e);
+            LOGGER.error("", e);
             return false;
         }
     }

@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 public class HealthcheckServlet implements BundleContextAware {
 
-    public static final Logger logger = LoggerFactory.getLogger(HealthcheckServlet.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(HealthcheckServlet.class);
 
     HealthcheckJSONProducer simpleServlet;
     BundleContext bundleContext;
@@ -71,11 +71,11 @@ public class HealthcheckServlet implements BundleContextAware {
         HttpService httpService = (HttpService) bundleContext.getService(realServiceReference);
         try {
             httpService.registerServlet("/healthcheck", simpleServlet, null, null);
-            logger.info("Successfully registered custom servlet at /modules/healthcheck");
-        } catch (ServletException e) {
-            e.printStackTrace();
-        } catch (NamespaceException e) {
-            e.printStackTrace();
+            LOGGER.info("Successfully registered custom servlet at /modules/healthcheck");
+        } catch (ServletException ex) {
+            LOGGER.error("Unsuccessfully registered custom servlet at /modules/healthcheck", ex);
+        } catch (NamespaceException ex) {
+            LOGGER.error("Unsuccessfully registered custom servlet at /modules/healthcheck", ex);
         }
 
     }
@@ -94,6 +94,6 @@ public class HealthcheckServlet implements BundleContextAware {
             return;
         }
         httpService.unregister("/healthcheck");
-        logger.info("Successfully unregistered custom servlet from /modules/healthcheck");
+        LOGGER.info("Successfully unregistered custom servlet from /modules/healthcheck");
     }
 }

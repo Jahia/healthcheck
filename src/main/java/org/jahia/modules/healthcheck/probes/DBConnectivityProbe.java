@@ -49,9 +49,13 @@ import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.utils.DatabaseUtils;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(service = Probe.class, immediate = true)
 public class DBConnectivityProbe implements Probe {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DBConnectivityProbe.class);
 
     @Override
     public String getStatus() {
@@ -62,8 +66,8 @@ public class DBConnectivityProbe implements Probe {
             } else {
                 return HealthcheckConstants.STATUS_RED;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException ex) {
+            LOGGER.debug("Impossible to check the validity of the DB connection", ex);
             return HealthcheckConstants.STATUS_RED;
         }
 

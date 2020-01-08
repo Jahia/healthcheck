@@ -49,9 +49,12 @@ import org.jahia.utils.RequestLoadAverage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(service = Probe.class, immediate = true)
 public class RequestLoadProbe implements Probe {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestLoadProbe.class);
 
     JSONObject loadAverageJson = new JSONObject();
 
@@ -61,8 +64,8 @@ public class RequestLoadProbe implements Probe {
         try {
             loadAverageJson.put("oneMinuteRequestLoadAverage", RequestLoadAverage.getInstance().getOneMinuteLoad());
             loadAverageJson.put("oneMinuteCurrentSessionLoad", JCRSessionLoadAverage.getInstance().getOneMinuteLoad());
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException ex) {
+            LOGGER.error("Impossible to generate the JSON", ex);
         }
         try {
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 40 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 40) {
@@ -72,8 +75,8 @@ public class RequestLoadProbe implements Probe {
                 return HealthcheckConstants.STATUS_YELLOW;
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException ex) {
+            LOGGER.error("Impossible to read the JSON", ex);
         }
         return HealthcheckConstants.STATUS_RED;
     }
