@@ -44,14 +44,12 @@
 
 package org.jahia.modules.healthcheck.probes;
 
-import org.jahia.modules.healthcheck.interfaces.HealthcheckProbeService;
+import java.sql.Connection;
+import java.sql.SQLException;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.utils.DatabaseUtils;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @Component(service = Probe.class, immediate = true)
 public class DBConnectivityProbe implements Probe {

@@ -44,6 +44,7 @@
 
 package org.jahia.modules.healthcheck.servlet;
 
+import javax.servlet.ServletException;
 import org.eclipse.gemini.blueprint.context.BundleContextAware;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -51,8 +52,6 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
 
 
 public class HealthcheckServlet implements BundleContextAware {

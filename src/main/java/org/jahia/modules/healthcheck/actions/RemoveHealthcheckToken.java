@@ -1,7 +1,13 @@
 package org.jahia.modules.healthcheck.actions;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRValueWrapper;
@@ -10,14 +16,6 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import org.apache.jackrabbit.core.fs.FileSystem;
-import org.jahia.api.Constants;
-import org.jahia.modules.healthcheck.HealthcheckConstants;
 
 public class RemoveHealthcheckToken extends Action {
     private static final Logger logger = LoggerFactory.getLogger(RemoveHealthcheckToken.class);
