@@ -29,30 +29,32 @@
  *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as Enterprise Distributions - must be
+ * used in accordance with the terms and conditions contained in a separate written agreement between you and Jahia
+ * Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.modules.healthcheck.probes;
 
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.utils.JCRSessionLoadAverage;
 import org.jahia.utils.RequestLoadAverage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component(service = Probe.class, immediate = true)
 public class RequestLoadProbe implements Probe {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestLoadProbe.class);
 
     JSONObject loadAverageJson = new JSONObject();
 
@@ -62,24 +64,24 @@ public class RequestLoadProbe implements Probe {
         try {
             loadAverageJson.put("oneMinuteRequestLoadAverage", RequestLoadAverage.getInstance().getOneMinuteLoad());
             loadAverageJson.put("oneMinuteCurrentSessionLoad", JCRSessionLoadAverage.getInstance().getOneMinuteLoad());
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException ex) {
+            LOGGER.error("Impossible to generate the JSON", ex);
         }
         try {
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 40 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 40) {
-                return "GREEN";
+                return HealthcheckConstants.STATUS_GREEN;
             }
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 70 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 70) {
-                return "YELLOW";
+                return HealthcheckConstants.STATUS_YELLOW;
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (JSONException ex) {
+            LOGGER.error("Impossible to read the JSON", ex);
         }
-        return "RED";
+        return HealthcheckConstants.STATUS_RED;
     }
 
-        @Override
+    @Override
     public JSONObject getData() {
         return loadAverageJson;
     }

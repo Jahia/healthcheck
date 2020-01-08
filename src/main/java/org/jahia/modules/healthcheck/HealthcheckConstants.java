@@ -5,7 +5,7 @@
  *
  *                                 http://www.jahia.com
  *
- *     Copyright (C) 2002-2018 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -40,11 +40,25 @@
  *
  * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-package org.jahia.modules.healthcheck.interfaces;
+package org.jahia.modules.healthcheck;
 
-import java.util.List;
+import org.apache.jackrabbit.core.fs.FileSystem;
 
-public interface HealthcheckProbeService {
+public class HealthcheckConstants {
 
-    public List<Probe> getProbes();
+    public static final String NODE_HEALTHCHECK_SETTINGS = "healthcheckSettings";
+    public static final String NODE_SETTINGS = "settings";
+    public static final String NODE_TYPE_HEALTHCHECK_SETTINGS = "jnt:healthcheckSettings";
+    public static final String PARAM_TOKEN = "token";
+    public static final String PATH_SETTINGS = FileSystem.SEPARATOR + HealthcheckConstants.NODE_SETTINGS;
+    public static final String PATH_HEALTHCHECK_SETTINGS = PATH_SETTINGS + FileSystem.SEPARATOR + HealthcheckConstants.NODE_HEALTHCHECK_SETTINGS;
+    public static final String PROP_HEALTHCHECK_TOKEN = "healthcheck.token";
+    public static final String PROP_TOKENS = "tokens";
+    public static final String STATUS_GREEN = "GREEN";
+    public static final String STATUS_RED = "RED";
+    public static final String STATUS_YELLOW = "YELLOW";
+
+    private HealthcheckConstants() {
+    }
+
 }

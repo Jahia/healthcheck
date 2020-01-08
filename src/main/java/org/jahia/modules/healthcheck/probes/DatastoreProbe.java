@@ -1,11 +1,14 @@
 package org.jahia.modules.healthcheck.probes;
 
+import java.io.File;
+import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.persistence.PersistenceManager;
 import org.apache.jackrabbit.core.persistence.pool.BundleDbPersistenceManager;
 import org.apache.jackrabbit.core.version.InternalVersionManager;
 import org.apache.jackrabbit.core.version.InternalVersionManagerImpl;
 import org.apache.jackrabbit.core.version.InternalXAVersionManager;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -15,9 +18,6 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
-import java.io.File;
-
 @Component(service = Probe.class, immediate = true)
 public class DatastoreProbe implements Probe {
 
@@ -25,9 +25,11 @@ public class DatastoreProbe implements Probe {
 
     @Override
     public String getStatus() {
-        if (isDbPersistenceManager()) return "GREEN";
+        if (isDbPersistenceManager()) {
+            return HealthcheckConstants.STATUS_GREEN;
+        }
         final String datastoreHome = System.getProperty("jahia.jackrabbit.datastore.path");
-        return (new File(datastoreHome)).canWrite() ? "GREEN" : "RED";
+        return (new File(datastoreHome)).canWrite() ? HealthcheckConstants.STATUS_GREEN : HealthcheckConstants.STATUS_RED;
     }
 
     @Override
