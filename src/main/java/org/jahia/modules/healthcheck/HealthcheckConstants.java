@@ -42,12 +42,24 @@
  */
 package org.jahia.modules.healthcheck;
 
-public class Constants {
+import org.apache.jackrabbit.core.fs.FileSystem;
 
-    public static final String PROP_TOKENS = "tokens";
+public class HealthcheckConstants {
+
     public static final String NODE_HEALTHCHECK_SETTINGS = "healthcheckSettings";
+    public static final String NODE_SETTINGS = "settings";
+    public static final String NODE_TYPE_HEALTHCHECK_SETTINGS = "jnt:healthcheckSettings";
+    public static final String PARAM_TOKEN = "token";
+    public static final String PATH_SETTINGS = FileSystem.SEPARATOR + HealthcheckConstants.NODE_SETTINGS;
+    public static final String PATH_HEALTHCHECK_SETTINGS = PATH_SETTINGS + FileSystem.SEPARATOR + HealthcheckConstants.NODE_HEALTHCHECK_SETTINGS;
+    public static final String PROP_HEALTHCHECK_TOKEN = "healthcheck.token";
+    public static final String PROP_TOKENS = "tokens";
+    public static final String STATUS_GREEN = "GREEN";
+    public static final String STATUS_RED = "RED";
+    public static final String STATUS_YELLOW = "YELLOW";
+    
 
-    private Constants() {
+    private HealthcheckConstants() {
     }
 
 }

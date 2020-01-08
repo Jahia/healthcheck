@@ -67,6 +67,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Locale;
+import org.apache.jackrabbit.core.fs.FileSystem;
+import org.jahia.api.Constants;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 
 
 /**
@@ -101,13 +104,13 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String configurationToken = settingBean.getString("healthcheck.token", null);
+        String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
         JSONObject result = new JSONObject();
         PrintWriter writer = resp.getWriter();
 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-            String token = req.getParameter("token");
+            String token = req.getParameter(HealthcheckConstants.PARAM_TOKEN);
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
             if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
@@ -120,16 +123,16 @@ public class HealthcheckJSONProducer extends HttpServlet {
                 long startTime = System.currentTimeMillis();
 
                 try {
-                    String currentStatus = "GREEN";
+                    String currentStatus = HealthcheckConstants.STATUS_GREEN;
                     for (int i = 0; probes.size() > i; i++) {
                         JSONObject healthcheckerJSON = new JSONObject();
                         healthcheckerJSON.put("status", probes.get(i).getStatus());
 
-                        if (probes.get(i).getStatus().equals("YELLOW") && currentStatus.equals("GREEN")) {
-                            currentStatus = "YELLOW";
+                        if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
+                            currentStatus = HealthcheckConstants.STATUS_YELLOW;
                         }
-                        if (probes.get(i).getStatus().equals("RED") && (currentStatus.equals("GREEN") || currentStatus.equals("YELLOW"))) {
-                            currentStatus = "RED";
+                        if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
+                            currentStatus = HealthcheckConstants.STATUS_RED;
                         }
                         healthcheckerJSON.put("data", probes.get(i).getData());
                         System.out.println("JSONObject: " + healthcheckerJSON.toString());
@@ -168,17 +171,17 @@ public class HealthcheckJSONProducer extends HttpServlet {
     }
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
-        String configurationToken = settingBean.getString("healthcheck.token", null);
+        String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
 
         if (token != null) {
             // checking if the token passed in jahia.property matches this one
             if (token.equals(configurationToken)) {
                 return true;
             }
-            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession("default", new Locale("en"),new Locale("en"));
-            if (systemSession.nodeExists("/settings/healthcheckSettings")) {
-                if (systemSession.getNode("/settings/healthcheckSettings").hasProperty("tokens")) {
-                    if (systemSession.getNode("/settings/healthcheckSettings").getPropertyAsString("tokens").contains(token)) {
+            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,Locale.ENGLISH);
+            if (systemSession.nodeExists(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS)) {
+                if (systemSession.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).hasProperty(HealthcheckConstants.PROP_TOKENS)) {
+                    if (systemSession.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).getPropertyAsString(HealthcheckConstants.PROP_TOKENS).contains(token)) {
                         return true;
                     }
                 }

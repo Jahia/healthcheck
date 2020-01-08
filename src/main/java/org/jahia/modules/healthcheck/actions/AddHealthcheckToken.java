@@ -5,9 +5,11 @@ import java.util.Locale;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.jackrabbit.core.fs.FileSystem;
+import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
-import org.jahia.modules.healthcheck.Constants;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -29,18 +31,18 @@ public class AddHealthcheckToken extends Action {
         final boolean useNumbers = false;
         final String generatedString = RandomStringUtils.random(length, useLetters, useNumbers);
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession("default", Locale.ENGLISH, Locale.ENGLISH);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH);
 
-        if (!session.nodeExists("/settings/" + Constants.NODE_HEALTHCHECK_SETTINGS)) {
-            session.getNode("/settings").addNode(Constants.NODE_HEALTHCHECK_SETTINGS, "jnt:healthcheckSettings");
+        if (!session.nodeExists(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS)) {
+            session.getNode(HealthcheckConstants.PATH_SETTINGS).addNode(HealthcheckConstants.NODE_HEALTHCHECK_SETTINGS, HealthcheckConstants.NODE_TYPE_HEALTHCHECK_SETTINGS);
             session.save();
         }
 
-        final JCRNodeWrapper healthcheckSettings = session.getNode("/settings/" + Constants.NODE_HEALTHCHECK_SETTINGS);
-        if (healthcheckSettings.hasProperty(Constants.PROP_TOKENS)) {
-            healthcheckSettings.getProperty(Constants.PROP_TOKENS).addValue(generatedString);
+        final JCRNodeWrapper healthcheckSettings = session.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS);
+        if (healthcheckSettings.hasProperty(HealthcheckConstants.PROP_TOKENS)) {
+            healthcheckSettings.getProperty(HealthcheckConstants.PROP_TOKENS).addValue(generatedString);
         } else {
-            healthcheckSettings.setProperty(Constants.PROP_TOKENS, new String[]{generatedString});
+            healthcheckSettings.setProperty(HealthcheckConstants.PROP_TOKENS, new String[]{generatedString});
         }
 
         session.save();
