@@ -44,6 +44,7 @@ package org.jahia.modules.healthcheck.probes;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.utils.DatabaseUtils;
 import org.json.JSONObject;
@@ -57,13 +58,13 @@ public class DBConnectivityProbe implements Probe {
         try ( Connection conn = DatabaseUtils.getDatasource().getConnection()) {
             // The timeout value is defined in seconds.
             if (conn.isValid(20)) {
-                return "GREEN";
+                return HealthcheckConstants.STATUS_GREEN;
             } else {
-                return "RED";
+                return HealthcheckConstants.STATUS_RED;
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return "RED";
+            return HealthcheckConstants.STATUS_RED;
         }
 
     }

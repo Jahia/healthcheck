@@ -8,6 +8,7 @@ import org.apache.jackrabbit.core.persistence.pool.BundleDbPersistenceManager;
 import org.apache.jackrabbit.core.version.InternalVersionManager;
 import org.apache.jackrabbit.core.version.InternalVersionManagerImpl;
 import org.apache.jackrabbit.core.version.InternalXAVersionManager;
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -25,10 +26,10 @@ public class DatastoreProbe implements Probe {
     @Override
     public String getStatus() {
         if (isDbPersistenceManager()) {
-            return "GREEN";
+            return HealthcheckConstants.STATUS_GREEN;
         }
         final String datastoreHome = System.getProperty("jahia.jackrabbit.datastore.path");
-        return (new File(datastoreHome)).canWrite() ? "GREEN" : "RED";
+        return (new File(datastoreHome)).canWrite() ? HealthcheckConstants.STATUS_GREEN : HealthcheckConstants.STATUS_RED;
     }
 
     @Override

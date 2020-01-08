@@ -42,6 +42,7 @@
  */
 package org.jahia.modules.healthcheck.probes;
 
+import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.utils.JCRSessionLoadAverage;
 import org.jahia.utils.RequestLoadAverage;
@@ -65,16 +66,16 @@ public class RequestLoadProbe implements Probe {
         }
         try {
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 40 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 40) {
-                return "GREEN";
+                return HealthcheckConstants.STATUS_GREEN;
             }
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 70 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 70) {
-                return "YELLOW";
+                return HealthcheckConstants.STATUS_YELLOW;
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return "RED";
+        return HealthcheckConstants.STATUS_RED;
     }
 
     @Override
