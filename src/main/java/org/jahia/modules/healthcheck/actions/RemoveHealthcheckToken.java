@@ -24,9 +24,6 @@ public class RemoveHealthcheckToken extends Action {
     @Override
     public ActionResult doExecute(HttpServletRequest httpServletRequest, RenderContext renderContext, Resource resource, JCRSessionWrapper jcrSessionWrapper, Map<String, List<String>> map, URLResolver urlResolver) throws Exception {
         logger.info("Removing healthcheck token.");
-        int length = 25;
-        boolean useLetters = true;
-        boolean useNumbers = false;
         String token = httpServletRequest.getParameter(HealthcheckConstants.PARAM_TOKEN);
 
         if (token == null) {

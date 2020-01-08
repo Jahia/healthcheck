@@ -29,9 +29,6 @@ import org.slf4j.LoggerFactory;
 public class HealthcheckJSONProducer extends HttpServlet {
 
     private Logger logger = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
-
-    private HttpService httpService;
-    private List<Probe> healthcheckers;
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
@@ -51,13 +48,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
     public void preDestroy() {
     }
 
-    public void setHttpService(HttpService httpService) {
-        this.httpService = httpService;
-    }
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
         JSONObject result = new JSONObject();
         PrintWriter writer = resp.getWriter();
 
