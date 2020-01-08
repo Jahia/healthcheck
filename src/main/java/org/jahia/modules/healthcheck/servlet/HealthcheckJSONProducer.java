@@ -1,5 +1,3 @@
-
-
 package org.jahia.modules.healthcheck.servlet;
 
 import java.io.IOException;
@@ -26,10 +24,10 @@ import org.osgi.service.http.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  */
 public class HealthcheckJSONProducer extends HttpServlet {
+
     private Logger logger = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
 
     private HttpService httpService;
@@ -111,7 +109,6 @@ public class HealthcheckJSONProducer extends HttpServlet {
                     result.put("duration", elapsedTime + " ms");
                     result.put("status", currentStatus);
 
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -133,7 +130,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
             if (token.equals(configurationToken)) {
                 return true;
             }
-            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,Locale.ENGLISH);
+            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH);
             if (systemSession.nodeExists(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS)) {
                 if (systemSession.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).hasProperty(HealthcheckConstants.PROP_TOKENS)) {
                     if (systemSession.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).getPropertyAsString(HealthcheckConstants.PROP_TOKENS).contains(token)) {
@@ -143,9 +140,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
             }
         }
 
-
-
-        if(session.getUser().getUsername().equals("guest")) {
+        if (session.getUser().getUsername().equals("guest")) {
             return false;
         }
         try {

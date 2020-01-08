@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RemoveHealthcheckToken extends Action {
+
     private static final Logger logger = LoggerFactory.getLogger(RemoveHealthcheckToken.class);
 
     @Override
@@ -32,7 +33,7 @@ public class RemoveHealthcheckToken extends Action {
             return null;
         }
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH,Locale.ENGLISH);
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH);
 
         if (!session.nodeExists(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS)) {
             session.getNode(HealthcheckConstants.PATH_SETTINGS).addNode(HealthcheckConstants.NODE_HEALTHCHECK_SETTINGS, HealthcheckConstants.NODE_TYPE_HEALTHCHECK_SETTINGS);
@@ -40,7 +41,7 @@ public class RemoveHealthcheckToken extends Action {
         }
 
         JCRValueWrapper[] values = session.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).getProperty(HealthcheckConstants.PROP_TOKENS).getValues();
-        for (int i = 0 ; i < values.length; i++) {
+        for (int i = 0; i < values.length; i++) {
             if (values[i].getString().equals(token)) {
                 session.getNode(HealthcheckConstants.PATH_HEALTHCHECK_SETTINGS).getProperty(HealthcheckConstants.PROP_TOKENS).removeValue(values[i]);
             }

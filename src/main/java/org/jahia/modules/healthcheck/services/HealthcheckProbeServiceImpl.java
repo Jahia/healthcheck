@@ -1,5 +1,3 @@
-
-
 package org.jahia.modules.healthcheck.services;
 
 import java.util.ArrayList;
@@ -18,11 +16,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 
-
 @Component(name = "org.jahia.modules.healthcheck.service", service = HealthcheckProbeService.class, property = {
-        Constants.SERVICE_PID + "=org.jahia.modules.healthcheck.service",
-        Constants.SERVICE_DESCRIPTION + "=Healthcheck Probe Service",
-        Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME}, immediate = true)
+    Constants.SERVICE_PID + "=org.jahia.modules.healthcheck.service",
+    Constants.SERVICE_DESCRIPTION + "=Healthcheck Probe Service",
+    Constants.SERVICE_VENDOR + "=" + Jahia.VENDOR_NAME}, immediate = true)
 public class HealthcheckProbeServiceImpl implements HealthcheckProbeService {
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(HealthcheckProbeServiceImpl.class);

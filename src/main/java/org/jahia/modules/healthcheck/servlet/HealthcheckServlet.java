@@ -29,19 +29,17 @@
  *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as Enterprise Distributions - must be
+ * used in accordance with the terms and conditions contained in a separate written agreement between you and Jahia
+ * Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.modules.healthcheck.servlet;
 
 import javax.servlet.ServletException;
@@ -52,7 +50,6 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class HealthcheckServlet implements BundleContextAware {
 

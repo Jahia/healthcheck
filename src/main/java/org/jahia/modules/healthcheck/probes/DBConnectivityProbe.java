@@ -29,19 +29,17 @@
  *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as Enterprise Distributions - must be
+ * used in accordance with the terms and conditions contained in a separate written agreement between you and Jahia
+ * Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use, please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.modules.healthcheck.probes;
 
 import java.sql.Connection;
@@ -54,10 +52,9 @@ import org.osgi.service.component.annotations.Component;
 @Component(service = Probe.class, immediate = true)
 public class DBConnectivityProbe implements Probe {
 
-
     @Override
-    public String getStatus()  {
-        try (Connection conn = DatabaseUtils.getDatasource().getConnection()){
+    public String getStatus() {
+        try ( Connection conn = DatabaseUtils.getDatasource().getConnection()) {
             // The timeout value is defined in seconds.
             if (conn.isValid(20)) {
                 return "GREEN";

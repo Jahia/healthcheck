@@ -57,7 +57,6 @@ public class HealthcheckConstants {
     public static final String STATUS_GREEN = "GREEN";
     public static final String STATUS_RED = "RED";
     public static final String STATUS_YELLOW = "YELLOW";
-    
 
     private HealthcheckConstants() {
     }
