@@ -172,7 +172,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
         if (token != null) {
             // checking if the token passed in jahia.property matches this one
-            if (configurationToken.equals(token)) {
+            if (token.equals(configurationToken)) {
                 return true;
             }
             JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession("default", new Locale("en"),new Locale("en"));
