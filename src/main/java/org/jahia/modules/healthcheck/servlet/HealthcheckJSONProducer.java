@@ -49,6 +49,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.addHeader("Content-Type", "application/json");
+
         JSONObject result = new JSONObject();
         PrintWriter writer = resp.getWriter();
 
