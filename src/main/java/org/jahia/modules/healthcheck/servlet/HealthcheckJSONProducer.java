@@ -84,14 +84,12 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         System.out.println("JSONObject: " + healthcheckerJSON.toString());
                         JSONObject checkers;
                         if (!result.has("probes")) {
-                            LOGGER.info("creating checkers");
                             checkers = new JSONObject();
                             result.put("probes", checkers);
                         } else {
                             checkers = result.getJSONObject("probes");
                         }
                         checkers.put(probes.get(i).getName(), healthcheckerJSON);
-                        LOGGER.info("putting checkers " + probes.get(i).getName());
 
                     }
                     result.put("registeredProbes", probes.size());
