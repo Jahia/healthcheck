@@ -81,7 +81,6 @@ public class HealthcheckJSONProducer extends HttpServlet {
                             currentStatus = HealthcheckConstants.STATUS_RED;
                         }
                         healthcheckerJSON.put("data", probes.get(i).getData());
-                        System.out.println("JSONObject: " + healthcheckerJSON.toString());
                         JSONObject checkers;
                         if (!result.has("probes")) {
                             LOGGER.debug("creating checkers");
