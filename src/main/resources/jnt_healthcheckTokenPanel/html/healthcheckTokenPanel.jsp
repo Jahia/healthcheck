@@ -51,7 +51,7 @@
                                             <strong title="The amount of used memory in bytes">Token #${status.index}</strong>
                                         </td>
                                         <td>
-                                                ${token.string} ( <a href="#" onclick="javascript:$.get( '${url.server}/en/sites/systemsite.removeHealthcheckToken.do?token=${token.string}', function( data ) { location.reload(); });">-</a> )
+                                                ${token.string} ( <a href="#" onclick="javascript:$.post( '${url.server}/en/sites/systemsite.removeHealthcheckToken.do?token=${token.string}', function( data ) { location.reload(); });">-</a> )
                                         </td>
                                         <td>
                                             <a target="_blank" href="${url.server}/healthcheck?token=${token.string}">${url.server}/healthcheck?token=${token.string}</a>
@@ -63,7 +63,7 @@
                             </div>
                         </div>
                     </div>
-                    <a href="#" onclick="javascript:$.get( '${url.server}/en/sites/systemsite.addHealthcheckToken.do', function( data ) { location.reload(); });">Generate new token</a>
+                    <a href="#" onclick="javascript:$.post( '${url.server}/en/sites/systemsite.addHealthcheckToken.do', function( data ) { location.reload(); });">Generate new token</a>
 
                 </div><div class="clear"></div>
             </div>
