@@ -151,6 +151,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
         String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
 
+        HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+
+        String karafToken = healthcheckConfig.getProperty("token");
+        // In case a token is deployed as karaf configuration, we use this one. The other method is kept for backward compatibility purpose only
+        if (token != null) {
+            configurationToken = karafToken;
+        }
+
         if (token != null) {
             // checking if the token passed in jahia.property matches this one
             if (token.equals(configurationToken)) {

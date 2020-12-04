@@ -24,6 +24,15 @@ The module can be configured using Karaf configuration
 
 Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-data/karaf/etc
 
+#### Authentication token
+
+healthcheck.token = <Alphanumeric String>
+
+As an alternative, a healthcheck.token properties can also be defined in jahia.properties. The Karaf based configuration will take precedence over the jahia.properties one if both are defined.
+
+Once the token is defined, the healthcheck URL can be called by passing the token as a GET parameter:
+http://127.0.0.1:8080/healthcheck?token=abcd
+
 #### Configure the HTTP code returned when the healthcheck is RED
 
 The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded with the following property:
