@@ -22,6 +22,21 @@ It returns a JSON object with the following structure:
 
 The Healthcheck module works on any Jahia DX 7.2+ platform.
 
+## Configuration
+
+The module can be configured using Karaf configuration
+
+Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-data/karaf/etc
+
+#### Authentication token
+
+healthcheck.token = <Alphanumeric String>
+
+As an alternative, a healthcheck.token properties can also be defined in jahia.properties. The Karaf based configuration will take precedence over the jahia.properties one if both are defined.
+
+Once the token is defined, the healthcheck URL can be called by passing the token as a GET parameter:
+http://127.0.0.1:8080/healthcheck?token=abcd
+
 ## Extensions
 
 While the core healthcheck provide basic capabilities such as database connectivity and server load, additional modules can extend its capabilities. When deploying a proper healthcheck module extension, the healthcheck servlet will automatically be added with the new information. 
