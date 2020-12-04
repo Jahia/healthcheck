@@ -28,7 +28,7 @@ Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-dat
 
 The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded with the following property:
 
-healthcheck.httpCode_on_error = 503
+healthcheck.http_code_on_error = 503
 
 ## Prerequisite
 

@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
  */
 public class HealthcheckJSONProducer extends HttpServlet {
 
-    private Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
-    private static int DEFAULT_HTTP_CODE_ON_ERROR = 500;
-    private static String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "httpCode_on_error";
+    private static final Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
+    private static final int DEFAULT_HTTP_CODE_ON_ERROR = 500;
+    private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
