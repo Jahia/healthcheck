@@ -14,9 +14,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.modules.healthcheck.HealthcheckConstants;
+import org.jahia.modules.healthcheck.config.HealthcheckConfigProvider;
 import org.jahia.modules.healthcheck.interfaces.HealthcheckProbeService;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.settings.SettingsBean;
@@ -33,6 +35,8 @@ import org.slf4j.LoggerFactory;
 public class HealthcheckJSONProducer extends HttpServlet {
 
     private Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
+    private static int DEFAULT_HTTP_CODE_ON_ERROR = 500;
+    private static String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "httpCode_on_error";
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
@@ -95,6 +99,17 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     }
                                     if (probe.getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
                                         currentStatus = HealthcheckConstants.STATUS_RED;
+
+                                        HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+                                        String customCodeOnError = healthcheckConfig.getProperty(DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER);
+
+                                        int errorCode = DEFAULT_HTTP_CODE_ON_ERROR;
+
+                                        if (customCodeOnError != null) {
+                                            errorCode = Integer.parseInt(customCodeOnError);
+                                        }
+
+                                        resp.setStatus(errorCode);
                                     }
                                     healthcheckerJSON.put("data", probe.getData());
                                     JSONObject checkers;

@@ -18,6 +18,18 @@ It returns a JSON object with the following structure:
 
 ![Healthcheck output](./images/output.png)
 
+## Configuration
+
+The module can be configured using Karaf configuration
+
+Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-data/karaf/etc
+
+#### Configure the HTTP code returned when the healthcheck is RED
+
+The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded with the following property:
+
+healthcheck.httpCode_on_error = 503
+
 ## Prerequisite
 
 The Healthcheck module works on any Jahia DX 7.2+ platform.
