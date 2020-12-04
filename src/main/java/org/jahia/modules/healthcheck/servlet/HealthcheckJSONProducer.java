@@ -2,7 +2,6 @@ package org.jahia.modules.healthcheck.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import javax.jcr.PathNotFoundException;
@@ -12,21 +11,17 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.modules.healthcheck.HealthcheckConstants;
 import org.jahia.modules.healthcheck.config.HealthcheckConfigProvider;
 import org.jahia.modules.healthcheck.interfaces.HealthcheckProbeService;
 import org.jahia.modules.healthcheck.interfaces.Probe;
-import org.jahia.osgi.FrameworkService;
+import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.settings.SettingsBean;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.InvalidSyntaxException;
-import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,67 +66,53 @@ public class HealthcheckJSONProducer extends HttpServlet {
                 result.put("error", "Insufficient privilege");
             } else {
 
-                BundleContext bundleContext = FrameworkService.getBundleContext();
-                List<ServiceReference> serviceReferences;
-                try {
-                    ServiceReference[] refs = bundleContext.getAllServiceReferences(HealthcheckProbeService.class.getName(), null);
-                    serviceReferences = refs != null && refs.length > 0 ? Arrays.asList(refs) : null;
-                } catch (InvalidSyntaxException var7) {
-                    throw new JahiaRuntimeException(var7);
-                }
+                HealthcheckProbeService healthcheckProbeService = BundleUtils.getOsgiService(HealthcheckProbeService.class, null);
+
+                List<Probe> probes = healthcheckProbeService.getProbes();
 
                 long startTime = System.currentTimeMillis();
-                int probesCount = 0;
 
                 try {
                     String currentStatus = HealthcheckConstants.STATUS_GREEN;
-                    if (serviceReferences != null) {
-                        for (ServiceReference serviceReference : serviceReferences) {
-                            HealthcheckProbeService healthcheckProbeService = (HealthcheckProbeService) bundleContext.getService(serviceReference);
-                            if (healthcheckProbeService != null) {
-                                List<Probe> probes = healthcheckProbeService.getProbes();
-                                for (Probe probe : probes) {
-                                    JSONObject healthcheckerJSON = new JSONObject();
-                                    healthcheckerJSON.put("status", probe.getStatus());
+                    for (int i = 0; probes.size() > i; i++) {
+                        JSONObject healthcheckerJSON = new JSONObject();
+                        healthcheckerJSON.put("status", probes.get(i).getStatus());
 
-                                    if (probe.getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
-                                        currentStatus = HealthcheckConstants.STATUS_YELLOW;
-                                    }
-                                    if (probe.getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
-                                        currentStatus = HealthcheckConstants.STATUS_RED;
-
-                                        HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
-                                        String customCodeOnError = healthcheckConfig.getProperty(DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER);
-
-                                        int errorCode = DEFAULT_HTTP_CODE_ON_ERROR;
-
-                                        if (customCodeOnError != null) {
-                                            errorCode = Integer.parseInt(customCodeOnError);
-                                        }
-
-                                        resp.setStatus(errorCode);
-                                    }
-                                    healthcheckerJSON.put("data", probe.getData());
-                                    JSONObject checkers;
-                                    if (!result.has("probes")) {
-                                        LOGGER.debug("creating checkers");
-                                        checkers = new JSONObject();
-                                        result.put("probes", checkers);
-                                    } else {
-                                        checkers = result.getJSONObject("probes");
-                                    }
-                                    checkers.put(probe.getName(), healthcheckerJSON);
-                                    LOGGER.debug("putting checkers " + probe.getName());
-                                    probesCount++;
-                                }
-                            }
+                        if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
+                            currentStatus = HealthcheckConstants.STATUS_YELLOW;
                         }
+
+                        if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
+                            currentStatus = HealthcheckConstants.STATUS_RED;
+
+                            HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+                            String customCodeOnError = healthcheckConfig.getProperty(DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER);
+
+                            int errorCode = DEFAULT_HTTP_CODE_ON_ERROR;
+
+                            if (customCodeOnError != null) {
+                                errorCode = Integer.parseInt(customCodeOnError);
+                            }
+
+                            resp.setStatus(errorCode);
+                        }
+
+                        healthcheckerJSON.put("data", probes.get(i).getData());
+                        JSONObject checkers;
+                        if (!result.has("probes")) {
+                            checkers = new JSONObject();
+                            result.put("probes", checkers);
+                        } else {
+                            checkers = result.getJSONObject("probes");
+                        }
+                        checkers.put(probes.get(i).getName(), healthcheckerJSON);
+
                     }
+                    result.put("registeredProbes", probes.size());
 
                     long stopTime = System.currentTimeMillis();
                     long elapsedTime = stopTime - startTime;
 
-                    result.put("registeredProbes", probesCount);
                     result.put("duration", elapsedTime + " ms");
                     result.put("status", currentStatus);
 
