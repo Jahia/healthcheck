@@ -29,7 +29,9 @@ import org.slf4j.LoggerFactory;
  */
 public class HealthcheckJSONProducer extends HttpServlet {
 
-    private Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
+    private static final int DEFAULT_HTTP_CODE_ON_ERROR = 500;
+    private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
@@ -79,9 +81,22 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                             currentStatus = HealthcheckConstants.STATUS_YELLOW;
                         }
+
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
                             currentStatus = HealthcheckConstants.STATUS_RED;
+
+                            HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+                            String customCodeOnError = healthcheckConfig.getProperty(DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER);
+
+                            int errorCode = DEFAULT_HTTP_CODE_ON_ERROR;
+
+                            if (customCodeOnError != null) {
+                                errorCode = Integer.parseInt(customCodeOnError);
+                            }
+
+                            resp.setStatus(errorCode);
                         }
+
                         healthcheckerJSON.put("data", probes.get(i).getData());
                         JSONObject checkers;
                         if (!result.has("probes")) {
