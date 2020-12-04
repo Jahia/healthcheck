@@ -28,7 +28,7 @@ Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-dat
 
 healthcheck.token = <Alphanumeric String>
 
-As an alternative, a healthcheck.token properties can also be defined in jahia.properties. The Karaf based configuration will taken precedence over the jahia.properties one if both are defined.
+As an alternative, a healthcheck.token properties can also be defined in jahia.properties. The Karaf based configuration will take precedence over the jahia.properties one if both are defined.
 
 Once the token is defined, the healthcheck URL can be called by passing the token as a GET parameter:
 http://127.0.0.1:8080/healthcheck?token=abcd
