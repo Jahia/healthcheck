@@ -12,9 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.jahia.api.Constants;
 import org.jahia.modules.healthcheck.HealthcheckConstants;
+import org.jahia.modules.healthcheck.config.HealthcheckConfigProvider;
 import org.jahia.modules.healthcheck.interfaces.HealthcheckProbeService;
 import org.jahia.modules.healthcheck.interfaces.Probe;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.settings.SettingsBean;
@@ -114,6 +116,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
         String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
+
+        HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+
+        String karafToken = healthcheckConfig.getProperty("token");
+        // In case a token is deployed as karaf configuration, we use this one. The other method is kept for backward compatibility purpose only
+        if (token != null) {
+            configurationToken = karafToken;
+        }
 
         if (token != null) {
             // checking if the token passed in jahia.property matches this one

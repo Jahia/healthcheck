@@ -29,4 +29,14 @@
         <osgi:listener ref="httpServiceListener" bind-method="onBind" unbind-method="onUnbind" />
     </osgi:reference>
 
+    <bean id="healthcheckConfig" class="org.jahia.modules.healthcheck.config.HealthcheckConfigProvider" />
+
+    <osgi:service interface="org.osgi.service.cm.ManagedServiceFactory" ref="healthcheckConfig">
+        <osgi:service-properties>
+            <entry key="service.pid" value="org.jahia.modules.healthcheck"/>
+            <entry key="service.description" value="Jahia Healthcheck configuration service"/>
+            <entry key="service.vendor" value="Jahia Solutions Group SA"/>
+        </osgi:service-properties>
+    </osgi:service>
+
 </beans>
