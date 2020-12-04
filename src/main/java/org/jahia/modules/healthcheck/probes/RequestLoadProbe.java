@@ -43,7 +43,9 @@
 package org.jahia.modules.healthcheck.probes;
 
 import org.jahia.modules.healthcheck.HealthcheckConstants;
+import org.jahia.modules.healthcheck.config.HealthcheckConfigProvider;
 import org.jahia.modules.healthcheck.interfaces.Probe;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.utils.JCRSessionLoadAverage;
 import org.jahia.utils.RequestLoadAverage;
 import org.json.JSONException;
@@ -56,10 +58,40 @@ import org.slf4j.LoggerFactory;
 public class RequestLoadProbe implements Probe {
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestLoadProbe.class);
 
+    private static final String CONFIGNAME_REQUEST_LOAD_YELLOW_SESSION = "request_load_yellow_threshold";
+    private static final String CONFIGNAME_REQUEST_LOAD_RED_SESSION = "request_load_red_threshold";
+    private static final String CONFIGNAME_SESSION_LOAD_YELLOW_SESSION = "session_load_yellow_threshold";
+    private static final String CONFIGNAME_SESSION_LOAD_RED_SESSION = "session_load_red_threshold";
+
+    HealthcheckConfigProvider healthcheckConfig;
     JSONObject loadAverageJson = new JSONObject();
 
     @Override
     public String getStatus() {
+        healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+
+        int requestLoadYellowThresholdInt = 40;
+        int requestLoadRedThresholdInt = 70;
+        int sessionLoadYellowThresholdInt = 40;
+        int sessionLoadRedThresholdInt = 70;
+
+        String requestLoadYellowThreshold = healthcheckConfig.getProperty(CONFIGNAME_REQUEST_LOAD_YELLOW_SESSION);
+        String requestLoadRedThreshold = healthcheckConfig.getProperty(CONFIGNAME_REQUEST_LOAD_RED_SESSION);
+        String sessionLoadYellowThreshold = healthcheckConfig.getProperty(CONFIGNAME_SESSION_LOAD_YELLOW_SESSION);
+        String sessionLoadRedThreshold = healthcheckConfig.getProperty(CONFIGNAME_SESSION_LOAD_RED_SESSION);
+
+        if (requestLoadYellowThreshold != null)
+            requestLoadYellowThresholdInt = Integer.parseInt(requestLoadYellowThreshold);
+
+        if (requestLoadRedThreshold != null)
+            requestLoadRedThresholdInt = Integer.parseInt(requestLoadRedThreshold);
+
+        if (sessionLoadYellowThreshold != null)
+            sessionLoadYellowThresholdInt = Integer.parseInt(sessionLoadYellowThreshold);
+
+        if (sessionLoadRedThreshold != null)
+            sessionLoadRedThresholdInt = Integer.parseInt(sessionLoadRedThreshold);
+        
         loadAverageJson = new JSONObject();
         try {
             loadAverageJson.put("oneMinuteRequestLoadAverage", RequestLoadAverage.getInstance().getOneMinuteLoad());
@@ -68,10 +100,10 @@ public class RequestLoadProbe implements Probe {
             LOGGER.error("Impossible to generate the JSON", ex);
         }
         try {
-            if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 40 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 40) {
+            if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < requestLoadYellowThresholdInt && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < sessionLoadYellowThresholdInt) {
                 return HealthcheckConstants.STATUS_GREEN;
             }
-            if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < 70 && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < 70) {
+            if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < requestLoadRedThresholdInt && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < sessionLoadRedThresholdInt) {
                 return HealthcheckConstants.STATUS_YELLOW;
             }
 
@@ -89,5 +121,9 @@ public class RequestLoadProbe implements Probe {
     @Override
     public String getName() {
         return "ServerLoad";
+    }
+
+    public void setHealthcheckConfig(HealthcheckConfigProvider healthcheckConfig) {
+        this.healthcheckConfig = healthcheckConfig;
     }
 }
