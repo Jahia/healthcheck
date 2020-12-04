@@ -37,6 +37,12 @@ As an alternative, a healthcheck.token properties can also be defined in jahia.p
 Once the token is defined, the healthcheck URL can be called by passing the token as a GET parameter:
 http://127.0.0.1:8080/healthcheck?token=abcd
 
+#### Configure the HTTP code returned when the healthcheck is RED
+
+The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded with the following property:
+
+healthcheck.http_code_on_error = 503
+
 ## Extensions
 
 While the core healthcheck provide basic capabilities such as database connectivity and server load, additional modules can extend its capabilities. When deploying a proper healthcheck module extension, the healthcheck servlet will automatically be added with the new information. 
