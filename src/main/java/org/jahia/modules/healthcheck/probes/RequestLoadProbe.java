@@ -51,8 +51,7 @@ import org.jahia.utils.RequestLoadAverage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.slf4j.*;
 
 @Component(service = Probe.class, immediate = true)
 public class RequestLoadProbe implements Probe {
@@ -100,6 +99,11 @@ public class RequestLoadProbe implements Probe {
             LOGGER.error("Impossible to generate the JSON", ex);
         }
         try {
+            LOGGER.debug("requestYellowThreshold: {}, requestRedThreshold: {}, sessionYellowThreshold: {}, sessionRedThreshold: {}",
+                    requestLoadYellowThresholdInt,
+                    requestLoadRedThresholdInt,
+                    sessionLoadYellowThresholdInt,
+                    sessionLoadRedThresholdInt);
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < requestLoadYellowThresholdInt && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < sessionLoadYellowThresholdInt) {
                 return HealthcheckConstants.STATUS_GREEN;
             }
