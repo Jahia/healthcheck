@@ -43,6 +43,17 @@ The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded w
 
 healthcheck.http_code_on_error = 503
 
+#### Session Load and Request Load status thresholds
+
+The following configuration can be deployed in the Karaf configuration file, and thresholds adjusted
+
+healthcheck.request_load_yellow_threshold = 40
+healthcheck.request_load_red_threshold = 70
+healthcheck.session_load_yellow_threshold = 40
+healthcheck.session-load_red_threshold = 70
+
+All properties are optional and will take the above values if not defined.
+
 ## Extensions
 
 While the core healthcheck provide basic capabilities such as database connectivity and server load, additional modules can extend its capabilities. When deploying a proper healthcheck module extension, the healthcheck servlet will automatically be added with the new information. 
