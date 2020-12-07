@@ -100,6 +100,8 @@ public class RequestLoadProbe implements Probe {
             LOGGER.error("Impossible to generate the JSON", ex);
         }
         try {
+            LOGGER.debug("requestYellowThreshold: {}, requestRedThreshold: {}", requestLoadYellowThresholdInt, requestLoadRedThresholdInt);
+            LOGGER.debug("sessionYellowThreshold: {}, sessionRedThreshold: {}", sessionLoadYellowThresholdInt, sessionLoadRedThresholdInt);
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < requestLoadYellowThresholdInt && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < sessionLoadYellowThresholdInt) {
                 return HealthcheckConstants.STATUS_GREEN;
             }
