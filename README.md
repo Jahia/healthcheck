@@ -26,9 +26,11 @@ Create a *org.jahia.modules.healthcheck-core.cfg* file under digital-factory-dat
 
 #### Authentication token
 
+```
 healthcheck.token = <Alphanumeric String>
+```
 
-As an alternative, a healthcheck.token properties can also be defined in jahia.properties. The Karaf based configuration will take precedence over the jahia.properties one if both are defined.
+As an alternative, a `healthcheck.token` properties can also be defined in jahia.properties. The Karaf based configuration will take precedence over the jahia.properties one if both are defined.
 
 Once the token is defined, the healthcheck URL can be called by passing the token as a GET parameter:
 http://127.0.0.1:8080/healthcheck?token=abcd
@@ -37,16 +39,20 @@ http://127.0.0.1:8080/healthcheck?token=abcd
 
 The default value is 500 (SERVICE UNAVAILABLE). This default can be overloaded with the following property:
 
+```
 healthcheck.http_code_on_error = 503
+```
 
 #### Session Load and Request Load status thresholds
 
 The following configuration can be deployed in the Karaf configuration file, and thresholds adjusted
 
+```
 healthcheck.request_load_yellow_threshold = 40
 healthcheck.request_load_red_threshold = 70
 healthcheck.session_load_yellow_threshold = 40
-healthcheck.session-load_red_threshold = 70
+healthcheck.session_load_red_threshold = 70
+```
 
 All properties are optional and will take the above values if not defined.
 
