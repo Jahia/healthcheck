@@ -39,11 +39,11 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
     private static final int DEFAULT_SEVERITY_THRESHOLD = HealthcheckConstants.PROBE_SEVERITY_CRITICAL; // by default, only critical probes are displayed
     private static final HashMap<String, Integer> PROBE_SEVERITY_LEVELS = new HashMap<String, Integer>()  {{
-                                                                                                        put("critical", 0);
-                                                                                                        put("high", 1);
-                                                                                                        put("medium", 2);
-                                                                                                        put("low", 3);
-                                                                                                    }};
+        put("critical", HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
+        put("high", HealthcheckConstants.PROBE_SEVERITY_HIGH);
+        put("medium", HealthcheckConstants.PROBE_SEVERITY_MEDIUM);
+        put("low", HealthcheckConstants.PROBE_SEVERITY_LOW);
+    }};
     private static final ArrayList<String> DEFAULT_CRITICAL_PROBES = new ArrayList<String>() {{
         add("Datastore");
         add("ServerLoad");
