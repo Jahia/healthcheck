@@ -59,6 +59,10 @@ public class HealthcheckConstants {
     public static final String STATUS_GREEN = "GREEN";
     public static final String STATUS_RED = "RED";
     public static final String STATUS_YELLOW = "YELLOW";
+    public static final int PROBE_SEVERITY_CRITICAL = 0;
+    public static final int PROBE_SEVERITY_HIGH = 1;
+    public static final int PROBE_SEVERITY_MEDIUM = 2;
+    public static final int PROBE_SEVERITY_LOW = 3;
 
     private HealthcheckConstants() {
     }

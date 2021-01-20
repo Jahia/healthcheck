@@ -37,7 +37,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
     private static final int DEFAULT_HTTP_CODE_ON_ERROR = 500;
     private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
-    private static final int DEFAULT_SEVERITY_THRESHOLD = 0; // by default, only critical probes are displayed
+    private static final int DEFAULT_SEVERITY_THRESHOLD = HealthcheckConstants.PROBE_SEVERITY_CRITICAL; // by default, only critical probes are displayed
     private static final HashMap<String, Integer> PROBE_SEVERITY_LEVELS = new HashMap<String, Integer>()  {{
                                                                                                         put("critical", 0);
                                                                                                         put("high", 1);
@@ -107,12 +107,12 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                 HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
                                 for (Probe probe : probes) {
                                     String probeSeverity = healthcheckConfig.getProperty(String.format(PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
-                                    int probeSeverityInt = 3;
+                                    int probeSeverityInt = HealthcheckConstants.PROBE_SEVERITY_LOW;
                                     if (DEFAULT_CRITICAL_PROBES.contains(probe.getName())) {
                                         // we still look at a possible severity override for default probes
-                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, 0);
+                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
                                     } else {
-                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, 3);
+                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_LOW);
                                     }
                                     LOGGER.debug("probe {} severity is {} while the threshold is '{}'", probe.getName(), probeSeverityInt, severityThreshold);
                                     if (severityThreshold < probeSeverityInt) {
