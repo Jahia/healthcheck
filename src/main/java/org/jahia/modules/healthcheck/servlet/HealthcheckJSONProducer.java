@@ -2,6 +2,8 @@ package org.jahia.modules.healthcheck.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import javax.jcr.PathNotFoundException;
@@ -32,6 +34,18 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(HealthcheckJSONProducer.class);
     private static final int DEFAULT_HTTP_CODE_ON_ERROR = 500;
     private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
+    private static final int DEFAULT_SEVERITY_THRESHOLD = HealthcheckConstants.PROBE_SEVERITY_CRITICAL; // by default, only critical probes are displayed
+    private static final HashMap<String, Integer> PROBE_SEVERITY_LEVELS = new HashMap<String, Integer>()  {{
+        put("critical", HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
+        put("high", HealthcheckConstants.PROBE_SEVERITY_HIGH);
+        put("medium", HealthcheckConstants.PROBE_SEVERITY_MEDIUM);
+        put("low", HealthcheckConstants.PROBE_SEVERITY_LOW);
+    }};
+    private static final ArrayList<String> DEFAULT_CRITICAL_PROBES = new ArrayList<String>() {{
+        add("Datastore");
+        add("ServerLoad");
+        add("DBConnectivity");
+    }};
     public SettingsBean settingBean;
 
     public SettingsBean getSettingBean() {
@@ -61,6 +75,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             String token = req.getParameter(HealthcheckConstants.PARAM_TOKEN);
+            String severityThresholdParam = req.getParameter(HealthcheckConstants.PARAM_SEVERITY);
+            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam, DEFAULT_SEVERITY_THRESHOLD);
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
             if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
@@ -72,9 +88,24 @@ public class HealthcheckJSONProducer extends HttpServlet {
 
                 long startTime = System.currentTimeMillis();
 
+                HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
+
                 try {
                     String currentStatus = HealthcheckConstants.STATUS_GREEN;
                     for (int i = 0; probes.size() > i; i++) {
+                        String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probes.get(i).getName()));
+                        int probeSeverityInt = HealthcheckConstants.PROBE_SEVERITY_LOW;
+                        if (DEFAULT_CRITICAL_PROBES.contains(probes.get(i).getName())) {
+                            // we still look at a possible severity override for default probes
+                            probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
+                        } else {
+                            probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_LOW);
+                        }
+                        if (severityThreshold < probeSeverityInt) {
+                            // skip this probe since it is above the requested severity threshold
+                            LOGGER.debug("skipping the logger {} (it is below the requested threshold)", probes.get(i).getName());
+                            continue;
+                        }
                         JSONObject healthcheckerJSON = new JSONObject();
                         healthcheckerJSON.put("status", probes.get(i).getStatus());
 
@@ -85,7 +116,6 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_RED) && (currentStatus.equals(HealthcheckConstants.STATUS_GREEN) || currentStatus.equals(HealthcheckConstants.STATUS_YELLOW))) {
                             currentStatus = HealthcheckConstants.STATUS_RED;
 
-                            HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
                             String customCodeOnError = healthcheckConfig.getProperty(DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER);
 
                             int errorCode = DEFAULT_HTTP_CODE_ON_ERROR;

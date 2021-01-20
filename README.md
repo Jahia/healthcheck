@@ -18,6 +18,8 @@ It returns a JSON object with the following structure:
 
 ![Healthcheck output](./images/output.png)
 
+By default, only `critical` probes are returned. Less severe probes can be returned by specifying the severity threshold as a GET parameter: `/healthcheck?severity=medium`. See the `Healthcheck probe severity` section for more details.
+
 ## Prerequisite
 
 The Healthcheck module works on any Jahia DX 7.2+ platform.
@@ -59,6 +61,27 @@ healthcheck.session_load_red_threshold = 70
 ```
 
 All properties are optional and will take the above values if not defined.
+
+#### Healthcheck probe severity
+
+The /healthcheck servlet only returns critical probes by default. This behaviour can be overriden by adding the severity threshold as a GET parameter when calling the healthcheck.
+The following thresholds are available:
+ - critical (default)
+ - high
+ - medium
+ - low
+ 
+All custom healthcheck extensions are considered "low severity" by default. The severity of each probe can be overloaded by defining the following property in the Karaf configuration file:
+
+```
+healthcheck.probe.{probeName}.severity={severity}
+```
+
+For instance, setting the ServerLoad probe to a medium severity requires the following configuration:
+
+```
+healthcheck.probe.ServerLoad.severity=medium
+```
 
 ## Extensions
 
