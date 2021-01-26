@@ -102,6 +102,10 @@ public class RequestLoadProbe implements Probe {
         try {
             LOGGER.debug("requestYellowThreshold: {}, requestRedThreshold: {}", requestLoadYellowThresholdInt, requestLoadRedThresholdInt);
             LOGGER.debug("sessionYellowThreshold: {}, sessionRedThreshold: {}", sessionLoadYellowThresholdInt, sessionLoadRedThresholdInt);
+            if (!loadAverageJson.has("oneMinuteRequestLoadAverage") || !loadAverageJson.has("oneMinuteCurrentSessionLoad")) {
+                LOGGER.warn("Impossible to read request load values {} {}", loadAverageJson.has("oneMinuteRequestLoadAverage"), loadAverageJson.has("oneMinuteCurrentSessionLoad"));
+                return HealthcheckConstants.STATUS_YELLOW;
+            }
             if (loadAverageJson.getInt("oneMinuteRequestLoadAverage") < requestLoadYellowThresholdInt && loadAverageJson.getInt("oneMinuteCurrentSessionLoad") < sessionLoadYellowThresholdInt) {
                 return HealthcheckConstants.STATUS_GREEN;
             }
