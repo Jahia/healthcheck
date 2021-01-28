@@ -77,7 +77,7 @@
     </dependencies>
 
     <properties>
-        <jahia-module-signature>MC0CFQCL/elR89EugUyQCA2MDDLbRO0zsQIUdgImarWcHAfTg6ETfhTJowYBeH8=</jahia-module-signature>
+	<jahia-module-signature>MC0CFFnVzl21KSvEcn33Eyc7h7yxkp6/AhUAkvC8qhfWxujcP/yyL4fRRA4bKVs=</jahia-module-signature>
         <require-capability>osgi.extender;filter:="(osgi.extender=org.jahia.bundles.blueprint.extender.config)"</require-capability>
         <jahia-module-type>system</jahia-module-type>
         <export-package>org.jahia.modules.healthcheck.interfaces</export-package>
