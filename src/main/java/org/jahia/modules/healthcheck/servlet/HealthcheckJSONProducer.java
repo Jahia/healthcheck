@@ -159,13 +159,13 @@ public class HealthcheckJSONProducer extends HttpServlet {
                     long stopTime = System.currentTimeMillis();
                     long elapsedTime = stopTime - startTime;
 
-                    if (result.get("status").equals(HealthcheckConstants.STATUS_RED)) {
-                        LOGGER.error("The healthcheck returned a RED status: {}", result.toString());
-                    }
-
                     result.put("registeredProbes", probesCount);
                     result.put("duration", elapsedTime + " ms");
                     result.put("status", currentStatus);
+
+                    if (result.get("status").equals(HealthcheckConstants.STATUS_RED)) {
+                        LOGGER.error("The healthcheck returned a RED status: {}", result.toString());
+                    }
 
                 } catch (JSONException ex) {
                     LOGGER.error("Impossible to generate the JSON", ex);
