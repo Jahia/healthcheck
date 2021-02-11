@@ -123,6 +123,8 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     JSONObject healthcheckerJSON = new JSONObject();
                                     healthcheckerJSON.put("status", probe.getStatus());
 
+                                    healthcheckerJSON.put("severity", getSeverityBySeveryInt(probeSeverityInt).toUpperCase());
+
                                     if (probe.getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                                         currentStatus = HealthcheckConstants.STATUS_YELLOW;
                                     }
@@ -178,6 +180,18 @@ public class HealthcheckJSONProducer extends HttpServlet {
         }
 
         writer.println(result.toString());
+    }
+
+    private String getSeverityBySeveryInt (int severityLevel) {
+        Iterator<Map.Entry<String, Integer>> it = PROBE_SEVERITY_LEVELS.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> pair = it.next();
+            if (pair.getValue() == severityLevel) {
+                return pair.getKey();
+            }
+        }
+        LOGGER.error ("Couldn't find ");
+        return "";
     }
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
