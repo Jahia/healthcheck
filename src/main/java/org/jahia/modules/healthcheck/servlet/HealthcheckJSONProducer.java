@@ -2,10 +2,7 @@ package org.jahia.modules.healthcheck.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
@@ -108,6 +105,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         }
                         JSONObject healthcheckerJSON = new JSONObject();
                         healthcheckerJSON.put("status", probes.get(i).getStatus());
+                        healthcheckerJSON.put("severity", getSeverityBySeveryInt(probeSeverityInt).toUpperCase());
 
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                             currentStatus = HealthcheckConstants.STATUS_YELLOW;
@@ -161,6 +159,18 @@ public class HealthcheckJSONProducer extends HttpServlet {
         }
 
         writer.println(result.toString());
+    }
+
+    private String getSeverityBySeveryInt (int severityLevel) {
+        Iterator<Map.Entry<String, Integer>> it = PROBE_SEVERITY_LEVELS.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, Integer> pair = it.next();
+            if (pair.getValue() == severityLevel) {
+                return pair.getKey();
+            }
+        }
+        LOGGER.error ("Couldn't find ");
+        return "";
     }
 
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
