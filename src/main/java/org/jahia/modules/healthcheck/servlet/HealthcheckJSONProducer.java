@@ -106,23 +106,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                 List<Probe> probes = healthcheckProbeService.getProbes();
                                 HealthcheckConfigProvider healthcheckConfig = (HealthcheckConfigProvider) SpringContextSingleton.getBean("healthcheckConfig");
                                 for (Probe probe : probes) {
-                                    String probeSeverity = healthcheckConfig.getProperty(String.format(PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
-                                    int probeSeverityInt = HealthcheckConstants.PROBE_SEVERITY_LOW;
-                                    if (DEFAULT_CRITICAL_PROBES.contains(probe.getName())) {
-                                        // we still look at a possible severity override for default probes
-                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
-                                    } else {
-                                        probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_LOW);
-                                    }
-                                    LOGGER.debug("probe {} severity is {} while the threshold is '{}'", probe.getName(), probeSeverityInt, severityThreshold);
-                                    if (severityThreshold < probeSeverityInt) {
-                                        // skip this probe since it is above the requested severity threshold
-                                        LOGGER.debug("skipping the logger {} (it is below the requested threshold)", probe.getName());
-                                        continue;
-                                    }
                                     JSONObject healthcheckerJSON = new JSONObject();
+                                    String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
+                                    if (probeSeverity == null) {
+                                        probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probe.getName()) ? "critical" : "low";
+                                    }
+                                    int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
+                                    healthcheckerJSON.put("severity", probeSeverity);
                                     healthcheckerJSON.put("status", probe.getStatus());
-
                                     healthcheckerJSON.put("severity", getSeverityBySeveryInt(probeSeverityInt).toUpperCase());
 
                                     if (probe.getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
