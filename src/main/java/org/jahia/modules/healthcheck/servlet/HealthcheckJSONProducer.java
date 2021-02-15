@@ -76,7 +76,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
             if (severityThresholdParam != null) {
                 severityThresholdParam = severityThresholdParam.toUpperCase();
             }
-            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam.toUpperCase(), DEFAULT_SEVERITY_THRESHOLD);
+            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam, DEFAULT_SEVERITY_THRESHOLD);
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
             if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
