@@ -39,10 +39,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
     private static final String DEFAULT_HTTP_CODE_ON_ERROR_PARAMETER = "http_code_on_error";
     private static final int DEFAULT_SEVERITY_THRESHOLD = HealthcheckConstants.PROBE_SEVERITY_CRITICAL; // by default, only critical probes are displayed
     private static final HashMap<String, Integer> PROBE_SEVERITY_LEVELS = new HashMap<String, Integer>()  {{
-        put("critical", HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
-        put("high", HealthcheckConstants.PROBE_SEVERITY_HIGH);
-        put("medium", HealthcheckConstants.PROBE_SEVERITY_MEDIUM);
-        put("low", HealthcheckConstants.PROBE_SEVERITY_LOW);
+        put(HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL, HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
+        put(HealthcheckConstants.PROBE_SEVERITY_HIGH_LABEL, HealthcheckConstants.PROBE_SEVERITY_HIGH);
+        put(HealthcheckConstants.PROBE_SEVERITY_MEDIUM_LABEL, HealthcheckConstants.PROBE_SEVERITY_MEDIUM);
+        put(HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL, HealthcheckConstants.PROBE_SEVERITY_LOW);
     }};
     private static final ArrayList<String> DEFAULT_CRITICAL_PROBES = new ArrayList<String>() {{
         add("Datastore");
@@ -109,7 +109,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     JSONObject healthcheckerJSON = new JSONObject();
                                     String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
                                     if (probeSeverity == null) {
-                                        probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probe.getName()) ? "critical" : "low";
+                                        probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probe.getName()) ? HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
                                     }
                                     int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
                                     healthcheckerJSON.put("severity", probeSeverity.toUpperCase());
