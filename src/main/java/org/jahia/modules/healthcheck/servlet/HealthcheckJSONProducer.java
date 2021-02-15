@@ -95,9 +95,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         if (probeSeverity == null) {
                             probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probes.get(i).getName()) ? HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
                         }
+                        probeSeverity = probeSeverity.toUpperCase();
                         int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity.toUpperCase());
-                        healthcheckerJSON.put("severity", probeSeverity.toUpperCase());
-                        healthcheckerJSON.put("status", probes.get(i).getStatus());
+                        healthcheckerJSON.put("severity", probeSeverity);
+                        healthcheckerJSON.put("status", probes.get(i));
 
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                             currentStatus = HealthcheckConstants.STATUS_YELLOW;
