@@ -112,7 +112,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     JSONObject healthcheckerJSON = new JSONObject();
                                     String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
                                     if (probeSeverity == null) {
-                                        probeSeverity = DEFAULT_PROBES_SEVERITY.containsKey(probe.getName()) ? DEFAULT_PROBES_SEVERITY.get(probe.getName()) : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
+                                        DEFAULT_PROBES_SEVERITY.getOrDefault(probe.getName(), HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL);
                                     }
                                     probeSeverity = probeSeverity.toUpperCase();
                                     int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
