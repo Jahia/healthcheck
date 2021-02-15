@@ -108,7 +108,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         }
 
                         healthcheckerJSON.put("severity", probeSeverity);
-                        healthcheckerJSON.put("status", probes.get(i));
+                        healthcheckerJSON.put("status", probes.get(i).getStatus());
 
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                             currentStatus = HealthcheckConstants.STATUS_YELLOW;
