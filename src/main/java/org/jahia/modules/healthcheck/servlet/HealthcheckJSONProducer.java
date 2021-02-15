@@ -100,6 +100,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         }
                         probeSeverity = probeSeverity.toUpperCase();
                         int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
+
+                        LOGGER.debug("probe {} severity is {} while the threshold is '{}'", probes.get(i).getName(), probeSeverityInt, severityThreshold);
+                        if (severityThreshold < probeSeverityInt) {
+                            // skip this probe since it is above the requested severity threshold
+                            LOGGER.debug("skipping the logger {} (it is below the requested threshold)", probes.get(i).getName());
+                            continue;
+                        }
+
                         healthcheckerJSON.put("severity", probeSeverity);
                         healthcheckerJSON.put("status", probes.get(i));
 
