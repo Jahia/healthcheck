@@ -80,7 +80,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             String token = req.getParameter(HealthcheckConstants.PARAM_TOKEN);
             String severityThresholdParam = req.getParameter(HealthcheckConstants.PARAM_SEVERITY);
-            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam, DEFAULT_SEVERITY_THRESHOLD);
+            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam.toUpperCase(), DEFAULT_SEVERITY_THRESHOLD);
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
             if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
@@ -111,7 +111,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     if (probeSeverity == null) {
                                         probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probe.getName()) ? HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
                                     }
-                                    int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
+                                    int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity.toUpperCase());
                                     healthcheckerJSON.put("severity", probeSeverity.toUpperCase());
                                     healthcheckerJSON.put("status", probe.getStatus());
 
