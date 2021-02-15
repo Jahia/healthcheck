@@ -38,12 +38,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
         put(HealthcheckConstants.PROBE_SEVERITY_MEDIUM_LABEL, HealthcheckConstants.PROBE_SEVERITY_MEDIUM);
         put(HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL, HealthcheckConstants.PROBE_SEVERITY_LOW);
     }};
-    private static final ArrayList<String> DEFAULT_CRITICAL_PROBES = new ArrayList<String>() {{
-        add("Datastore");
-        add("DBConnectivity");
-    }};
-    private static final ArrayList<String> DEFAULT_HIGH_PROBES = new ArrayList<String>() {{
-        add("ServerLoad");
+    private static final HashMap<String, String> DEFAULT_PROBES_SEVERITY = new HashMap<String, String>() {{
+        put("Datastore", HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL);
+        put("DBConnectivity", HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL);
+        put("ServerLoad", HealthcheckConstants.PROBE_SEVERITY_HIGH_LABEL);
     }};
     public SettingsBean settingBean;
 
@@ -98,13 +96,7 @@ public class HealthcheckJSONProducer extends HttpServlet {
                         JSONObject healthcheckerJSON = new JSONObject();
                         String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probes.get(i).getName()));
                         if (probeSeverity == null) {
-                            if (DEFAULT_CRITICAL_PROBES.contains(probes.get(i).getName())) {
-                                probeSeverity = HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL;
-                            } else if (DEFAULT_HIGH_PROBES.contains(probes.get(i).getName())) {
-                                probeSeverity = HealthcheckConstants.PROBE_SEVERITY_HIGH_LABEL;
-                            } else {
-                                probeSeverity = HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
-                            }
+                            probeSeverity = DEFAULT_PROBES_SEVERITY.containsKey(probes.get(i).getName()) ? DEFAULT_PROBES_SEVERITY.get(probes.get(i).getName()) : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
                         }
                         probeSeverity = probeSeverity.toUpperCase();
                         int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
