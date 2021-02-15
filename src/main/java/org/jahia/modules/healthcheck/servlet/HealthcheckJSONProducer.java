@@ -46,8 +46,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
     }};
     private static final ArrayList<String> DEFAULT_CRITICAL_PROBES = new ArrayList<String>() {{
         add("Datastore");
-        add("ServerLoad");
         add("DBConnectivity");
+    }};
+    private static final ArrayList<String> DEFAULT_HIGH_PROBES = new ArrayList<String>() {{
+        add("ServerLoad");
     }};
 
     public SettingsBean settingBean;
@@ -80,7 +82,10 @@ public class HealthcheckJSONProducer extends HttpServlet {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             String token = req.getParameter(HealthcheckConstants.PARAM_TOKEN);
             String severityThresholdParam = req.getParameter(HealthcheckConstants.PARAM_SEVERITY);
-            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam.toUpperCase(), DEFAULT_SEVERITY_THRESHOLD);
+            if (severityThresholdParam != null) {
+                severityThresholdParam = severityThresholdParam.toUpperCase();
+            }
+            int severityThreshold = PROBE_SEVERITY_LEVELS.getOrDefault(severityThresholdParam, DEFAULT_SEVERITY_THRESHOLD);
             final boolean allowUnauthenticatedAccess = Boolean.parseBoolean(SettingsBean.getInstance().getPropertiesFile().getProperty("modules.healthcheck.allowUnauthenticatedAccess", "false"));
             if (!allowUnauthenticatedAccess && !isUserAllowed(session, token)) {
                 result.put("error", "Insufficient privilege");
@@ -109,7 +114,13 @@ public class HealthcheckJSONProducer extends HttpServlet {
                                     JSONObject healthcheckerJSON = new JSONObject();
                                     String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probe.getName()));
                                     if (probeSeverity == null) {
-                                        probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probe.getName()) ? HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL : HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
+                                        if (DEFAULT_CRITICAL_PROBES.contains(probe.getName())) {
+                                            probeSeverity = HealthcheckConstants.PROBE_SEVERITY_CRITICAL_LABEL;
+                                        } else if (DEFAULT_HIGH_PROBES.contains(probe.getName())) {
+                                            probeSeverity = HealthcheckConstants.PROBE_SEVERITY_HIGH_LABEL;
+                                        } else {
+                                            probeSeverity = HealthcheckConstants.PROBE_SEVERITY_LOW_LABEL;
+                                        }
                                     }
                                     probeSeverity = probeSeverity.toUpperCase();
                                     int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
