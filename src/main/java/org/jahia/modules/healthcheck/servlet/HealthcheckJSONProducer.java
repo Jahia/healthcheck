@@ -153,18 +153,6 @@ public class HealthcheckJSONProducer extends HttpServlet {
         writer.println(result.toString());
     }
 
-    private String getSeverityBySeveryInt (int severityLevel) {
-        Iterator<Map.Entry<String, Integer>> it = PROBE_SEVERITY_LEVELS.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry<String, Integer> pair = it.next();
-            if (pair.getValue() == severityLevel) {
-                return pair.getKey();
-            }
-        }
-        LOGGER.error ("Couldn't find ");
-        return "";
-    }
-
     private boolean isUserAllowed(JCRSessionWrapper session, String token) throws RepositoryException {
         String configurationToken = settingBean.getString(HealthcheckConstants.PROP_HEALTHCHECK_TOKEN, null);
 
