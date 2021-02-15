@@ -41,7 +41,7 @@ public class HealthcheckConfigProvider implements ManagedServiceFactory, Initial
                     String subKey = StringUtils.substringAfter(key, "healthcheck.");
                     String name = StringUtils.substringBefore(subKey, ".");
                     if (!trialConfig.containsKey(name)) {
-                        trialConfig.put(key, (String) dictionary.get(key));
+                        trialConfig.put(subKey, (String) dictionary.get(key));
                     }
                 }
             }
