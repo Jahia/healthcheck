@@ -54,7 +54,7 @@ public class HealthcheckConstants {
     public static final String PATH_SETTINGS = FileSystem.SEPARATOR + HealthcheckConstants.NODE_SETTINGS;
     public static final String PATH_HEALTHCHECK_SETTINGS = PATH_SETTINGS + FileSystem.SEPARATOR + HealthcheckConstants.NODE_HEALTHCHECK_SETTINGS;
     public static final String PROP_HEALTHCHECK_TOKEN = "healthcheck.token";
-    public static final String PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER = "healthcheck.probe.%s.severity"; // where %s is the classname of the probe
+    public static final String PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER = "probe.%s.severity"; // where %s is the classname of the probe
     public static final String PROP_TOKENS = "tokens";
     public static final String STATUS_GREEN = "GREEN";
     public static final String STATUS_RED = "RED";
