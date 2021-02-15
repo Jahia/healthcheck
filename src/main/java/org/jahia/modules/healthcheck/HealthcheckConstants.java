@@ -63,6 +63,10 @@ public class HealthcheckConstants {
     public static final int PROBE_SEVERITY_HIGH = 1;
     public static final int PROBE_SEVERITY_MEDIUM = 2;
     public static final int PROBE_SEVERITY_LOW = 3;
+    public static final String PROBE_SEVERITY_CRITICAL_LABEL = "CRITICAL";
+    public static final String PROBE_SEVERITY_HIGH_LABEL = "HIGH";
+    public static final String PROBE_SEVERITY_MEDIUM_LABEL = "MEDIUM";
+    public static final String PROBE_SEVERITY_LOW_LABEL = "LOW";
 
     private HealthcheckConstants() {
     }
