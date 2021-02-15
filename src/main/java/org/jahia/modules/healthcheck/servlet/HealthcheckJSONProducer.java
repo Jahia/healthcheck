@@ -90,22 +90,14 @@ public class HealthcheckJSONProducer extends HttpServlet {
                 try {
                     String currentStatus = HealthcheckConstants.STATUS_GREEN;
                     for (int i = 0; probes.size() > i; i++) {
-                        String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probes.get(i).getName()));
-                        int probeSeverityInt = HealthcheckConstants.PROBE_SEVERITY_LOW;
-                        if (DEFAULT_CRITICAL_PROBES.contains(probes.get(i).getName())) {
-                            // we still look at a possible severity override for default probes
-                            probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_CRITICAL);
-                        } else {
-                            probeSeverityInt = PROBE_SEVERITY_LEVELS.getOrDefault(probeSeverity, HealthcheckConstants.PROBE_SEVERITY_LOW);
-                        }
-                        if (severityThreshold < probeSeverityInt) {
-                            // skip this probe since it is above the requested severity threshold
-                            LOGGER.debug("skipping the logger {} (it is below the requested threshold)", probes.get(i).getName());
-                            continue;
-                        }
                         JSONObject healthcheckerJSON = new JSONObject();
+                        String probeSeverity = healthcheckConfig.getProperty(String.format(HealthcheckConstants.PROP_HEALTHCHECK_PROBE_SEVERITY_PARAMETER, probes.get(i).getName()));
+                        if (probeSeverity == null) {
+                            probeSeverity = DEFAULT_CRITICAL_PROBES.contains(probes.get(i).getName()) ? "critical" : "low";
+                        }
+                        int probeSeverityInt = PROBE_SEVERITY_LEVELS.get(probeSeverity);
+                        healthcheckerJSON.put("severity", probeSeverity.toUpperCase());
                         healthcheckerJSON.put("status", probes.get(i).getStatus());
-                        healthcheckerJSON.put("severity", getSeverityBySeveryInt(probeSeverityInt).toUpperCase());
 
                         if (probes.get(i).getStatus().equals(HealthcheckConstants.STATUS_YELLOW) && currentStatus.equals(HealthcheckConstants.STATUS_GREEN)) {
                             currentStatus = HealthcheckConstants.STATUS_YELLOW;
