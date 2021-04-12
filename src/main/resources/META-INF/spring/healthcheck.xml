@@ -8,7 +8,11 @@
        http://www.springframework.org/schema/osgi/spring-osgi.xsd">
 
     <bean id="simpleServlet" class="org.jahia.modules.healthcheck.servlet.HealthcheckJSONProducer">
-        <property name="settingBean" ref="settingsBean" />
+        <property name="configurationToken" value="${healthcheck.token:}"/>
+        <property name="allowUnauthenticatedAccess" value="${modules.healthcheck.allowUnauthenticatedAccess:false}"/>
+        <property name="onlyForSubnets" value="${modules.healthcheck.onlyForSubnets:127.0.0.1/32}"/>
+        <property name="remoteAddressHeader" value="${modules.healthcheck.remoteAddressHeader:x-forwarded-for}"/>
+        <property name="useFirstRemoteAddress" value="${modules.healthcheck.useFirstRemoteAddress:true}"/>
     </bean>
 
     <bean id="httpServiceListener" class="org.jahia.modules.healthcheck.servlet.HealthcheckServlet">
